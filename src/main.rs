@@ -17,5 +17,5 @@ fn main() {
         .expect("Failed at reading input");
 
     tokenize(input, &mut token_list);
-    parser(&mut token_list);
+    parser(token_list);
 }
