@@ -1,4 +1,5 @@
-pub const ALLOWED_OPERATIONS: [char; 4] = ['-', '+', '*', '/'];
+pub const BASIC_OPERATIONS: [char; 2] = ['-', '+'];
+pub const COMPLEX_OPERATIONS: [char; 2] = ['*', '/'];
 
 #[derive(Debug)]
 pub struct Operation {
