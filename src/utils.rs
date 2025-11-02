@@ -1,14 +1,18 @@
-use crate::core::{ALLOWED_OPERATIONS, Operation, Priority, Token};
+use std::collections::VecDeque;
 
-pub fn parser(mut tokens: Vec<Token>) {
-    let mut ops_stack: Vec<Operation> = vec![];
+use crate::core::{ALLOWED_OPERATIONS, Operation, Token};
 
-    println!("Before: {:?}", tokens);
+pub fn parser(mut tokens: Vec<Token>, ops_stack: &mut VecDeque<Operation>) {
+    loop {
+        extract_operation(&mut tokens, ops_stack, '/');
+        extract_operation(&mut tokens, ops_stack, '*');
+        extract_operation(&mut tokens, ops_stack, '+');
+        extract_operation(&mut tokens, ops_stack, '-');
 
-    extract_operation(&mut tokens, &mut ops_stack, '*', Priority::Medium);
-
-    println!("After: {:?}", tokens);
-    println!("stack: {:?}", ops_stack)
+        if tokens.is_empty() {
+            break;
+        }
+    }
 }
 
 pub fn tokenize(input: String) -> Vec<Token> {
@@ -46,9 +50,8 @@ pub fn tokenize(input: String) -> Vec<Token> {
 
 pub fn extract_operation(
     tokens: &mut Vec<Token>,
-    stack_operation: &mut Vec<Operation>,
+    stack_operation: &mut VecDeque<Operation>,
     raw_operator: char,
-    priority: Priority,
 ) {
     let operator_i = match tokens
         .iter()
@@ -64,7 +67,6 @@ pub fn extract_operation(
         v1: None,
         op: Some(raw_operator),
         v2: None,
-        priority,
     };
 
     let v2_i = (operator_i + 1) - 1;
@@ -99,15 +101,9 @@ pub fn extract_operation(
     return add_operation(stack_operation, operation);
 }
 
-fn add_operation(stack_operation: &mut Vec<Operation>, operation: Operation) {
-    let position = stack_operation
-        .iter()
-        .position(|o| o.priority < operation.priority)
-        .unwrap_or(0);
-
-    if position + 1 < stack_operation.len() {
-        return stack_operation.insert(position + 1, operation);
-    }
-
-    stack_operation.push(operation);
+fn add_operation(stack_operation: &mut VecDeque<Operation>, operation: Operation) {
+    let op = match operation.op {
+        Some(o) => o,
+        None => return,
+    };
 }

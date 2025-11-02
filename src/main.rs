@@ -1,11 +1,15 @@
-use std::io;
+use std::{collections::VecDeque, io};
 mod utils;
 mod core;
 
 use utils::{parser, tokenize};
 
+use crate::core::Operation;
+
 fn main() {
     let mut input = String::new();
+    let mut operation_list:VecDeque<Operation> = VecDeque::new();
+
     println!("Current supported operation are (+,-,*,/)");
     println!("Type your desire operation:");
 
@@ -13,6 +17,8 @@ fn main() {
         .read_line(&mut input)
         .expect("Failed at reading input");
 
-    let tokens = tokenize(input);
-    parser(tokens);
+    let token = tokenize(input);
+    parser(token, &mut operation_list);
+
+    println!("{:?}", operation_list);
 }
